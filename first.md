@@ -438,8 +438,69 @@ M.max(axis=1)    # =1은 각 행에 대한 것.
 - 예제: 미국 대통령의 평균 신장은 얼마일까? (p.70)
 ```python
 !head -4 data/president_heights.csv
+
+import pandas as pd
+data = pd.read_csv('data/president_heights.csv')
+heights = np.array(data['height(cm)'])
+print(heights)
+
+# 다양한 요약 통계 계산
+print("Mean height:   ", heights.mean())
+print("Standard deviation:   ", heights.std())
+print("Minimum height:   ", heights.min())
+print("Maximum height:   ", heights.max())
+# 사분위수도 계산가능
+np.percentile(heights, 25)
+np.median(heights)
+np.percentile(heights, 75)
+
+# 시각적으로 표현하는 것이 유용할 수도
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn; seaborn.set()  # 플롯 스타일 설정
+plt.hist(heights)
+plt.title('~~~')
+plt.xlabel('height (cm)')
+plt.ylabel('number');
 ```
 ### 2-5. 배열 연산: 브로드캐스팅 (p.72)
+벡터화 연산의 또 다른 방법은 Numpy의 브로드캐스팅 기능 사용. 이것은 단지 다른 크기의 배열에 이항 유니버설 함수(덧셈, 곱셈, 뺄셈 등)를 적용하기 위한 규칙의 집합일 뿐.
 - 브로드캐스팅 소개 (p.72)
+  - 같은 크기의 배열에서 이항 연산은 배열의 요소 단위로 수행된다.
+```python
+import numpy as np
+a = np.array([0, 1, 2])
+b = np.array([5, 5, 5])
+a + b   # 답 5, 6, 7
+# 브로드캐스팅은 이러한 유형의 이항 연산을 서로 다른 크기 배열에서 수행 가능.
+# 배열에 스칼라도 쉽게 더할 수 있다.
+a + 5   # 답 5 6 7
+# 값 5를 5 5 5로 확장하거나 복제하고 그 결과를 더하는 연산이 발생한다고 생각하면 됨.
+# 그러나 실제 복제가 발생하지는 않음.
+```
 - 브로드캐스팅 규칙 (p.74)
+  - 규칙1: 두 배열의 차원수가 다르면 더 적은 차원 수의 배열 형상의 앞쪽(왼쪽)을 1로 채운다.
+  - 규칙2: 두 배열 형상이 어떠한 차원에서도 일치하지 않으면 해당 차원의 형상이 1인 배열이 다른 형상과 일치하도록 늘어난다.
+  - 규칙3: 임의의 차원에서 크기 불일치, 1도 아니라면 오류가 발생한다.
 - 실전 브로드캐스팅 (p.77)
+```python
+# 배열 중앙 정렬하기
+# ufunc를 통해 파이썬 루프를 명시적으로 작성하지 않아도 되는 사실을 알았다. 브로드캐스팅은 이 능력을 확장한다.
+X = np.random.random((10, 3))
+
+Xmean = X.mean(0)  # 첫 번째 차원의 특성별 평균값 계산
+
+X_centered = X - Mean  # 평균값을 빼서 X 배열을 중앙 정렬한다. 이것이 브로드캐스팅.
+
+# 2차원 함수 플로팅하기
+# 2차원 함수 기반 이미지 그릴 때도 유용.
+# x와 y는 0~5까지 50단계로 나눈 배열이다.
+x = np.linspace(0, 5, 50)
+y = np.linspace(0, 5, 50)[:, np.newaxis]
+z = np.sin(x) ** 10 + np.cos(10 + y * x) * np.cos(x)
+
+%matplotlib inline
+import matplotlib.pyplot as plt
+plt.imshow(z, origin='lower', extent=[0, 5, 0, 5], cmap='viridis')
+plt.colorbar();
+```
