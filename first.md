@@ -395,12 +395,50 @@ np.power(2, x, out=y[::2])
 # 배열을 특정 연산으로 축소할 때 reduce 메소드. 결과가 하나 남을때까지 반복 적용.
 x = np.arrange(1, 6)
 np.add.reduce(x)
+
+# 모든 배열 요소의 곱을 반환한다. 원소끼리 곱한 것.
+x = np.multiply.reduce(x)
+
+# 계산 중간 결과 모두 저장하려면 accumulate
+np.add.accumulate(x)
+# 그 결과를 계산하는 전용 np 함수 np.sum, np.prod, np.cumsum, np.cumprod도 있다.
+
+# 외적
+# outer 메소드로 곱 테이블을 만들 수 있다.
+np.multiply.outer(x, x)
+# ufunc.at과 ufunc.reduceat 메소드도 매우 유용.
 ```
 - Ufuncs: 더 알아보기 (p.64)
 ### 2-4. 집계: 최솟값, 최댓값, 그리고 그 사이의 모든 것 (p.66)
+대용량 데이터에 직면했을 때 가장 궁금 한 것은 요약 통계. 이러한 내장 집계 함수들에 대한 것.
 - 배열의 값의 합 구하기 (p.66)
+```python
+# 가장 간단한 것은 합치는 것.
+np.sum(L)
+# 이 기능은 파이썬에도 있지만 np에서 훨씬 속도가 빠르다. sum과 np.sum은 완벽히 동일한 것은 아니라 혼선이 있을수도.
+```
 - 최솟값과 최댓값 (p.67)
+```python
+min(L), max(L)    # 최솟값과 최댓값에 대한 파이썬 함수
+np.min(L), np.max(L)    # 비슷한 np 함수. 속도는 더 빠르다.
+L.min(), L.max(), L.sum()    # 더 간단하게 작성도 가능.
+
+# 다차원 집계
+# 가장 보편적인 집계는 행과 열을 기준으로 하는 것.
+M.sum()    # 기본적으로 합치기
+M.min(axis=0)    # 축을 지정할 수 있다. 각 열의 최솟값을 찾으려면 =0으로 지정.
+M.max(axis=1)    # =1은 각 행에 대한 것.
+# axis 키워드는 반환할 차원이 아닌 축소할 차원이다. 0을 입력한다는 것은 첫 번째 축을 축소한다는 것. 2차원이라면 열들의 값이 집계된다는 것.
+
+# 기타 집계함수
+# 누락을 무시하라는 NaN 안전 모드도 있다.
+```  
+![image](https://github.com/user-attachments/assets/5dda0f44-4cff-45f3-a300-b0456e646884)  
+
 - 예제: 미국 대통령의 평균 신장은 얼마일까? (p.70)
+```python
+!head -4 data/president_heights.csv
+```
 ### 2-5. 배열 연산: 브로드캐스팅 (p.72)
 - 브로드캐스팅 소개 (p.72)
 - 브로드캐스팅 규칙 (p.74)
